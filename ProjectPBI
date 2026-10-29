@@ -1,0 +1,30 @@
+1. Data Modeling: Star Schema
+Fact Table (FactSales): Stores transaction-level numerical metrics (quantity, price, LineTotal) and key IDs (invoice, stockcode, customerid, invoicedate).
+
+Dimension Tables (DimDate, DimProduct, DimCustomer): Store unique lookup attributes (dates, descriptions, customer locations).
+
+Relationships: Configured as 1-to-Many (1:*) single-direction links from Dimensions to the Fact table for efficient filtering and fast report performance.
+
+2. ETL & Data Preparation (Power Query)
+Data Cleansing: Filtered out negative quantities and cancellation invoices (starting with "C"), and handled missing customerid entries.
+
+Feature Engineering: Added a calculated column (LineTotal = quantity * price) in Power Query to reduce DAX memory overhead during runtime.
+
+Data Type Optimization: Explicitly set data types (Date, Decimal Number, Text) to prevent implicit conversions and model errors.
+
+3. Analytics & Logic (DAX)
+Aggregation: Computed core metrics using SUM and SUMX.
+
+Distinct Counting: Used DISTINCTCOUNT(invoice) to count unique orders rather than individual transaction rows.
+
+Safe Division: Applied DIVIDE(Numerator, Denominator, 0) for Average Order Value (AOV) to prevent divide-by-zero errors.
+
+Time Intelligence: Built dynamic Month-over-Month (MoM) growth calculations using CALCULATE, DATEADD, and MONTH functions referenced against a dedicated date calendar table (DimDate).
+
+4. Interactive Data Visualization
+High-Level KPIs: Multi-card visual layout showcasing Total Revenue, Total Orders, Average Order Value, and Total Customers.
+
+Time Series Trend Analysis: Line charts displaying revenue progression over time.
+Ranking & Top-N Analysis: Horizontal bar charts filtered to isolate top-performing products by revenue.
+
+Geographic & Customer Segmentation: Maps and matrix visual tables paired with cross-filtering slicers (Year, Month, Country) for multi-dimensional drill-downs.
